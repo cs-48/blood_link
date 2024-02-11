@@ -1,87 +1,37 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomePage extends StatelessWidget {
+  HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
+  final user = FirebaseAuth.instance.currentUser!; //to return the name or email of current user
 
-class _HomePageState extends State<HomePage> {
+  //sign user out method
+  void signUserOut() {
+    FirebaseAuth.instance.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.grey[300],
-        shadowColor: Colors.black,
-        title: Center(
-          child: Text(
-            'Blood Link',
-            style: TextStyle(
-              color: Colors.red[900],
-              fontFamily: 'Helvetica',
-              fontWeight: FontWeight.bold,
-              fontSize: 27,
+        backgroundColor: Colors.grey[850],
+        actions: [
+          IconButton(
+            onPressed: signUserOut,
+            icon: Icon(
+              Icons.logout,
+              color: Colors.white,
             ),
           ),
-        ),
+        ],
       ),
-      body: Container(
-        width: 430,
-        height: 302,
-        child: Stack(
-          children: [
-            // Positioned(
-            //   left: 0,
-            //   top: 0,
-            //   child: Container(
-            //     width: 430,
-            //     height: 302,
-            //     decoration: ShapeDecoration(
-            //       color: Colors.white.withOpacity(0.38999998569488525),
-            //       shape: RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(25),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            Positioned(
-              left: 0,
-              top: 0,
-              child: Container(
-                width: 430,
-                height: 138,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage("https://www.xpressmedical.net/wp-content/uploads/2023/11/DONATE-BLOOD-560x315-1920w.png"),
-                    fit: BoxFit.fitWidth,
-                  ),
-                ),
-              ),
-            ),
-            // Positioned(
-            //   left: 172,
-            //   top: 275,
-            //   child: Container(
-            //     width: 94,
-            //     height: 27,
-            //     decoration: const BoxDecoration(
-            //       image: DecorationImage(
-            //         image: NetworkImage(""),
-            //         fit: BoxFit.contain,
-            //       ),
-            //       boxShadow: [
-            //         BoxShadow(
-            //           color: Color(0x3F000000),
-            //           blurRadius: 4,
-            //           offset: Offset(0, 4),
-            //           spreadRadius: 0,
-            //         )
-            //       ],
-            //     ),
-            //   ),
-            // ),
-          ],
+      body: Center(
+        child: Text(
+          "LOGGED IN AS: " + user.email!,
+          style: TextStyle(fontSize: 20),
         ),
       ),
     );
