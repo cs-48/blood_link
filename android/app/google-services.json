@@ -12,7 +12,12 @@
           "package_name": "com.example.blood_link"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "827550457264-jq3o7nddph613arqgmgccr2l26r6fcti.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDXlAS8Cd98EnJgPOVsEXQ1zN2xnDj5dTE"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "827550457264-jq3o7nddph613arqgmgccr2l26r6fcti.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "827550457264-dpquird40kkvoumf79sje291uidl6dje.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bloodLink.RunnerTests"
+              }
+            }
+          ]
         }
       }
     }
