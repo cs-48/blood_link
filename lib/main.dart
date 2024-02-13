@@ -4,7 +4,7 @@ import 'package:blood_link/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:blood_link/pages/intro_page.dart';
 import 'package:flutter/material.dart';
-
+//haiida
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
