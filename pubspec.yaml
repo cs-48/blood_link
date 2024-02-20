@@ -12,6 +12,9 @@ dependencies:
   firebase_core: ^2.25.4
   firebase_auth: ^4.17.4
   google_sign_in: ^6.2.1
+  google_nav_bar: ^5.0.6
+  carousel_slider: ^4.2.1
+  vertical_card_pager: ^1.6.0
 
 dev_dependencies:
   flutter_test:
