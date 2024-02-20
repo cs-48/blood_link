@@ -59,9 +59,9 @@ class _HomePageState extends State<HomePage> {
             width: MediaQuery.of(context).size.width * 0.6,
             child: ElevatedButton.icon(
               onPressed: () {
-                // Add your logic here
+                
               },
-              icon: Icon(
+              icon: Icon( 
                 Icons.search,
                 color: Colors.white,
               ),
@@ -71,10 +71,13 @@ class _HomePageState extends State<HomePage> {
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                minimumSize: Size(double.infinity, 50), // Increase the height of the button
               ),
-            ),
           ),
-        ],
+      )],
       ),
       bottomNavigationBar:
           MyBottomNavBar(onTabChange: (index) => navigateBottomBar(index)),
