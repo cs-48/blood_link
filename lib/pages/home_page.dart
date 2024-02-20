@@ -49,7 +49,36 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: VerticalPages(),
+      body: Column(
+        children: [
+          Expanded(
+            child: VerticalPages(),
+          ),
+          SizedBox(height: 20),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.6,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                
+              },
+              icon: Icon( 
+                Icons.search,
+                color: Colors.white,
+              ),
+              label: Text(
+                'Find Donor',
+                style: TextStyle(fontSize: 19, color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                minimumSize: Size(double.infinity, 50), // Increase the height of the button
+              ),
+          ),
+      )],
+      ),
       bottomNavigationBar:
           MyBottomNavBar(onTabChange: (index) => navigateBottomBar(index)),
     );
