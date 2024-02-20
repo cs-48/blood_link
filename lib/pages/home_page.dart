@@ -49,7 +49,33 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: VerticalPages(),
+      body: Column(
+        children: [
+          Expanded(
+            child: VerticalPages(),
+          ),
+          SizedBox(height: 20),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.6,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                // Add your logic here
+              },
+              icon: Icon(
+                Icons.search,
+                color: Colors.white,
+              ),
+              label: Text(
+                'Find Donor',
+                style: TextStyle(fontSize: 19, color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+              ),
+            ),
+          ),
+        ],
+      ),
       bottomNavigationBar:
           MyBottomNavBar(onTabChange: (index) => navigateBottomBar(index)),
     );
