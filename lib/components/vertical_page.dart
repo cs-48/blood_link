@@ -19,7 +19,7 @@ class _VerticalPagesState extends State<VerticalPages> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> titles = List.generate(imageList.length, (index) => '');
+    List<String> titles = List.generate(imageList.length, (index) => ''); // to not show the text on top of images
     List<Widget> images = imageList.map((image) {
       return Container(
         decoration: BoxDecoration(
