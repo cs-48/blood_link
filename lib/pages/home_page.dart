@@ -38,13 +38,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.grey[850],
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
         actions: [
           IconButton(
             onPressed: signUserOut,
             icon: Icon(
               Icons.logout,
-              color: Colors.white,
+              color: const Color.fromARGB(255, 0, 0, 0),
             ),
           ),
         ],

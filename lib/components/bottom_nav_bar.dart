@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
+
 class MyBottomNavBar extends StatelessWidget {
   void Function(int)? onTabChange;
   MyBottomNavBar({
@@ -11,7 +12,7 @@ class MyBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       child: GNav(
         color: Colors.grey[400],
         activeColor: Colors.grey.shade700,
@@ -20,6 +21,10 @@ class MyBottomNavBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         tabBorderRadius: 16,
         gap: 8,
+        padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width >= 600 ? 75 : 26,
+          vertical: 10,
+        ),
         onTabChange: (value) => onTabChange!(value),
         tabs: const [
           GButton(
@@ -28,7 +33,7 @@ class MyBottomNavBar extends StatelessWidget {
           ),
           GButton(
             icon: Icons.bloodtype_rounded,
-            text: 'Staus',
+            text: 'Status',
           ),
           GButton(
             icon: Icons.mark_as_unread_rounded,
