@@ -43,8 +43,15 @@ class _SearchWidgetState extends State<SearchWidget> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               onChanged: filterDoners,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Search',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                hintText: 'Search by location or blood group',
               ),
             ),
           ),
@@ -55,7 +62,14 @@ class _SearchWidgetState extends State<SearchWidget> {
                 return ListTile(
                   title: Text(filteredDoners[index].name),
                   subtitle: Text(
-                      'Place: ${filteredDoners[index].place}, Blood Group: ${filteredDoners[index].bloodGroup}'),
+                    'Place: ${filteredDoners[index].place}, Blood Group: ${filteredDoners[index].bloodGroup}',
+                  ),
+                  tileColor: index % 2 == 0 ? Colors.grey[200] : Colors.white,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  trailing: Icon(Icons.arrow_forward),
                 );
               },
             ),
