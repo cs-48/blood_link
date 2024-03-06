@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 
-class MyBottomNavBar extends StatelessWidget {
+
+class MyBottomNavBar extends StatefulWidget {
   void Function(int)? onTabChange;
   MyBottomNavBar({
     super.key,
     required this.onTabChange,
   });
 
+  @override
+  State<MyBottomNavBar> createState() => _MyBottomNavBarState();
+}
+
+class _MyBottomNavBarState extends State<MyBottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,7 +31,7 @@ class MyBottomNavBar extends StatelessWidget {
           horizontal: MediaQuery.of(context).size.width >= 600 ? 75 : 26,
           vertical: 10,
         ),
-        onTabChange: (value) => onTabChange!(value),
+        onTabChange: (value) => widget.onTabChange!(value),
         tabs: const [
           GButton(
             icon: Icons.home_rounded,
