@@ -4,7 +4,7 @@ import 'package:blood_link/components/bottom_nav_bar.dart';
 import 'package:vertical_card_pager/vertical_card_pager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import './SerchDoner.dart';
 import '../components/vertical_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,7 +15,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   //this selected index is to control bottom nav bar
   int _selectedIndex = 0;
 
@@ -59,9 +58,12 @@ class _HomePageState extends State<HomePage> {
             width: MediaQuery.of(context).size.width * 0.6,
             child: ElevatedButton.icon(
               onPressed: () {
-                
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SearchWidget()),
+                );
               },
-              icon: Icon( 
+              icon: Icon(
                 Icons.search,
                 color: Colors.white,
               ),
@@ -74,10 +76,12 @@ class _HomePageState extends State<HomePage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                minimumSize: Size(double.infinity, 50), // Increase the height of the button
+                minimumSize: Size(
+                    double.infinity, 50), // Increase the height of the button
               ),
-          ),
-      )],
+            ),
+          )
+        ],
       ),
       bottomNavigationBar:
           MyBottomNavBar(onTabChange: (index) => navigateBottomBar(index)),
