@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables
 
-import 'package:blood_link/components/bottom_nav_bar.dart';
+
 import 'package:vertical_card_pager/vertical_card_pager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   //this selected index is to control bottom nav bar
   int _selectedIndex = 0;
 
@@ -36,18 +37,18 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
-        actions: [
-          IconButton(
-            onPressed: signUserOut,
-            icon: Icon(
-              Icons.logout,
-              color: const Color.fromARGB(255, 0, 0, 0),
-            ),
-          ),
-        ],
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      //   actions: [
+      //     IconButton(
+      //       onPressed: signUserOut,
+      //       icon: Icon(
+      //         Icons.logout,
+      //         color: const Color.fromARGB(255, 0, 0, 0),
+      //       ),
+      //     ),
+      //   ],
+      // ),
       body: Column(
         children: [
           Expanded(
@@ -58,12 +59,13 @@ class _HomePageState extends State<HomePage> {
             width: MediaQuery.of(context).size.width * 0.6,
             child: ElevatedButton.icon(
               onPressed: () {
-                Navigator.push(
+                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => SearchWidget()),
                 );
+                 
               },
-              icon: Icon(
+              icon: Icon( 
                 Icons.search,
                 color: Colors.white,
               ),
@@ -76,15 +78,12 @@ class _HomePageState extends State<HomePage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                minimumSize: Size(
-                    double.infinity, 50), // Increase the height of the button
+                minimumSize: Size(double.infinity, 50), // Increase the height of the button
               ),
-            ),
-          )
-        ],
+          ),
+      )],
       ),
-      bottomNavigationBar:
-          MyBottomNavBar(onTabChange: (index) => navigateBottomBar(index)),
+      
     );
   }
 }

@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class ProfilePage extends StatelessWidget {
+ void signUserOut() {
+    FirebaseAuth.instance.signOut();
+  }
   @override
+
   Widget build(BuildContext context) {
+  
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text('Profile')),// remove when the profile page building is completed
@@ -15,7 +22,7 @@ class ProfilePage extends StatelessWidget {
               alignment: Alignment.topCenter, // Align profile image to the top center
               child: CircleAvatar(
                 radius: 50,
-                backgroundImage: AssetImage('lib/images/profile_image_1.png'),
+                backgroundImage: AssetImage('lib/images/512x512.png'),
               ),
             ),
             SizedBox(height: 20),
@@ -175,7 +182,7 @@ class ProfilePage extends StatelessWidget {
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.6,
                 child: ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: signUserOut ,
                   icon: Icon(
                     Icons.logout,
                     color: Colors.white,

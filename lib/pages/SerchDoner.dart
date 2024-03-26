@@ -35,7 +35,7 @@ class _SearchWidgetState extends State<SearchWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Doner Search'),
+        title: const Text('Donor Search'),
       ),
       body: Column(
         children: [

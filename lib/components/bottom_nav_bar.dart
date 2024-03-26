@@ -1,3 +1,6 @@
+
+
+import 'package:blood_link/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
@@ -50,6 +53,7 @@ class _MyBottomNavBarState extends State<MyBottomNavBar> {
             text: 'Profile',
           ),
         ],
+
       ),
     );
   }
