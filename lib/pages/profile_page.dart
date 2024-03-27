@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'dart:developer';
 
 class ProfilePage extends StatelessWidget {
+  final user = FirebaseAuth
+      .instance.currentUser!; 
+     
  void signUserOut() {
     FirebaseAuth.instance.signOut();
   }
+  
   @override
 
   Widget build(BuildContext context) {
-  
+  print(user.email);
+  print(user.email);
+  print(user.email);
+  print(user.email);
+  print(user);
+
+  final email = user.email;
+  final img = user.photoURL;
+  final name = user.displayName;
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text('Profile')),// remove when the profile page building is completed
@@ -22,7 +34,7 @@ class ProfilePage extends StatelessWidget {
               alignment: Alignment.topCenter, // Align profile image to the top center
               child: CircleAvatar(
                 radius: 50,
-                backgroundImage: AssetImage('lib/images/512x512.png'),
+                backgroundImage: NetworkImage("$img"),
               ),
             ),
             SizedBox(height: 20),
@@ -30,7 +42,7 @@ class ProfilePage extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16), // Add horizontal padding
                 child: Text(
-                  'Username',
+                  '$name',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -46,7 +58,7 @@ class ProfilePage extends StatelessWidget {
                   ),
                   SizedBox(width: 8), // Add space after the header
                   Text(
-                    'example@example.com',
+                  '$email',
                     style: TextStyle(fontSize: 16),
                   ),
                 ],

@@ -10,6 +10,8 @@ class StatusPage extends StatefulWidget {
 class _StatusPageState extends State<StatusPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      
+    );
   }
 }
