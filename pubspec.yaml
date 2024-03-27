@@ -15,6 +15,7 @@ dependencies:
   google_nav_bar: ^5.0.6
   carousel_slider: ^4.2.1
   vertical_card_pager: ^1.6.0
+  flutter_countdown_timer: ^2.1.0
 
 dev_dependencies:
   flutter_test:
