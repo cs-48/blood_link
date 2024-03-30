@@ -96,11 +96,7 @@ class RemainingDays extends StatelessWidget {
 
     return remainingDays != null
         ? Center(
-            child: CountdownTimer(
-              endTime: currentDate.add(Duration(days: remainingDays)).millisecondsSinceEpoch,
-              textStyle: TextStyle(fontSize: 24, color: Colors.blue),
-              onEnd: () {},
-            ),
+            child: Text("Remaining days for next donation: $remainingDays days")
           )
         : SizedBox.shrink();
   }
