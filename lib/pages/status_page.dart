@@ -37,15 +37,18 @@ class _StatusPageState extends State<StatusPage> {
               itemCount: donations.length,
               itemBuilder: (context, index) {
                 final donation = donations[index];
-                final color = donation.completed ? Color.fromARGB(255, 180, 183, 180) : Color.fromARGB(255, 242, 180, 87);
+                final color = donation.completed ? Color.fromARGB(255, 253, 253, 253) : Color.fromARGB(255, 244, 231, 211);
                 return Card(
                   color: color,
+                  elevation: 3.0,
                   child: ListTile(
                     title: Text('Donation ID: ${donation.id}'),
                     subtitle: Text('Completed: ${donation.completed}'),
-                    trailing: Text('Date: ${donation.date.toString()}'),
-                  ),
-                );
+                    trailing: donation.completed
+                        ? Icon(Icons.add_task_rounded, color: Colors.green) // Tick icon for completed donation
+                        : Icon(Icons.assignment_late, color: Colors.orange), // Wait icon for pending donation
+                    ),
+                  );
               },
             ),
           ),
