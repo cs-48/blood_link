@@ -52,8 +52,4 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: HomePage(),
-  ));
-}
+
