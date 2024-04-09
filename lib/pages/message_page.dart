@@ -25,8 +25,17 @@ class _MessagePageState extends State<MessagePage> {
     // Handle accept action
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ChatPage(message: messages[index])),
+      MaterialPageRoute(builder: (context) => ChatScreen(message: messages[index])),
     );
+  }
+
+
+   void rejectMessage(int index) {
+    // Handle reject action
+    setState(() {
+      messages.removeAt(index);
+      timestamps.removeAt(index);
+    });
   }
 
   @override
