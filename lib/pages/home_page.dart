@@ -1,54 +1,44 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables
-
-
-import 'package:vertical_card_pager/vertical_card_pager.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import './SerchDoner.dart';
 import '../components/vertical_page.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-
-  //this selected index is to control bottom nav bar
   int _selectedIndex = 0;
 
-  //this method will update out selected index
+  final user = FirebaseAuth.instance.currentUser!;
 
-  //when the user taps on the bottom bar
-  void navigateBottomBar(int index) {
-    setState(() {
-      _selectedIndex = index;
+  void signUserOut() {
+    FirebaseAuth.instance.signOut();
+  }
+
+  void addUserDetailsToFirestore() async {
+    final usersCollection = FirebaseFirestore.instance.collection('users');
+    await usersCollection.doc(user.uid).set({
+      'uid': user.uid,
+      'name': user.displayName,
+      'email': user.email,
+      // Add any other user details you want to store
     });
   }
 
-  final user = FirebaseAuth
-      .instance.currentUser!; //to return the name or email of current user
-  void signUserOut() {
-    FirebaseAuth.instance.signOut();
+  @override
+  void initState() {
+    super.initState();
+    addUserDetailsToFirestore();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Color.fromARGB(255, 255, 255, 255),
-      //   actions: [
-      //     IconButton(
-      //       onPressed: signUserOut,
-      //       icon: Icon(
-      //         Icons.logout,
-      //         color: const Color.fromARGB(255, 0, 0, 0),
-      //       ),
-      //     ),
-      //   ],
-      // ),
       body: Column(
         children: [
           Expanded(
@@ -59,13 +49,12 @@ class _HomePageState extends State<HomePage> {
             width: MediaQuery.of(context).size.width * 0.6,
             child: ElevatedButton.icon(
               onPressed: () {
-                 Navigator.push(
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => SearchWidget()),
                 );
-                 
               },
-              icon: Icon( 
+              icon: Icon(
                 Icons.search,
                 color: Colors.white,
               ),
@@ -78,12 +67,12 @@ class _HomePageState extends State<HomePage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                minimumSize: Size(double.infinity, 50), // Increase the height of the button
+                minimumSize: Size(double.infinity, 50),
               ),
+            ),
           ),
-      )],
+        ],
       ),
-      
     );
   }
 }

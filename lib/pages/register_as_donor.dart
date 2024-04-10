@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegDonor extends StatefulWidget {
   const RegDonor({Key? key}) : super(key: key);
@@ -99,6 +100,15 @@ class _RegDonorState extends State<RegDonor> {
                       _weightController.text.isNotEmpty) {
                     setState(() {
                       _allFieldsFilled = true;
+                    });
+                    // Add the details to the users collection
+                    FirebaseFirestore.instance.collection('users').add({
+                      'donor': true,
+                      'bloodGroup': _selectedBloodGroup,
+                      'place': _placeController.text,
+                      'height': int.parse(_heightController.text),
+                      'weight': int.parse(_weightController.text),
+                      'healthFactors': _healthFactors,
                     });
                     Navigator.pop(context, true); // Return true when all required fields are filled
                   } else {

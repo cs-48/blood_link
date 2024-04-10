@@ -73,16 +73,28 @@ class DonationEligibility extends StatelessWidget {
     final difference = lastDonationDate != null ? currentDate.difference(lastDonationDate).inDays : null;
 
     return Container(
-      padding: EdgeInsets.all(16.0),
-      color: difference != null && difference >= 90 ? Colors.green : Colors.red,
-      child: Center(
-        child: Text(
-          difference != null && difference >= 90 ? 'Eligible for donation' : 'Not eligible for donation',
-          style: TextStyle(color: Colors.white),
-        ),
+  padding: EdgeInsets.all(16.0),
+  decoration: BoxDecoration(
+    gradient: LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      difference != null && difference >= 90 ? Color.fromARGB(255, 29, 230, 79) : Color.fromARGB(255, 255, 0, 0),
+      difference != null && difference >= 90 ? Color.fromARGB(255, 50, 72, 10) : Color.fromARGB(255, 102, 22, 22),
+    ],
+  ),
+  
+  ),
+  child: Center(
+    child: Text(
+      difference != null && difference >= 90 ? 'Eligible for donation' : 'Not eligible for donation',
+      style: TextStyle(color: Color.fromARGB(255, 255, 255, 255),
+      fontSize: 17.0,
+      fontWeight: FontWeight.bold,
       ),
-    );
-  }
+    ),
+  ),
+);}
 }
 
 class RemainingDays extends StatelessWidget {
