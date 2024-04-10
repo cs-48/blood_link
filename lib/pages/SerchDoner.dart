@@ -26,6 +26,7 @@ class _SearchWidgetState extends State<SearchWidget> {
       filteredDoners = doners
           .where((doner) =>
               doner.place.toLowerCase().contains(query.toLowerCase()) ||
+              doner.name.toLowerCase().contains(query.toLowerCase()) ||
               doner.bloodGroup.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });

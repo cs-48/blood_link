@@ -17,6 +17,7 @@ dependencies:
   vertical_card_pager: ^1.6.0
   timer_count_down: ^2.2.0
 
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

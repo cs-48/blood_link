@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer';
+import 'register_as_donor.dart';
 
 class ProfilePage extends StatelessWidget {
   final user = FirebaseAuth
@@ -9,15 +10,12 @@ class ProfilePage extends StatelessWidget {
  void signUserOut() {
     FirebaseAuth.instance.signOut();
   }
+
   
   @override
 
   Widget build(BuildContext context) {
-  print(user.email);
-  print(user.email);
-  print(user.email);
-  print(user.email);
-  print(user);
+
 
   final email = user.email;
   final img = user.photoURL;
@@ -159,9 +157,7 @@ class ProfilePage extends StatelessWidget {
                 ),
                 Switch(
                   value: false, // Replace with your logic to toggle the button
-                  onChanged: (value) {
-                    // Add your logic here to handle the toggle button
-                  },
+                  onChanged: (value)=>  Navigator.push(context,MaterialPageRoute(builder: (context) => RegDonor()),),
                 ),
               ],
             ),
@@ -170,7 +166,7 @@ class ProfilePage extends StatelessWidget {
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.6,
                 child: ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed:()=>  Navigator.push(context,MaterialPageRoute(builder: (context) => RegDonor()),),
                   icon: Icon(
                     Icons.edit,
                     color: Colors.white,
