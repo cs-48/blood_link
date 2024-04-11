@@ -48,12 +48,27 @@ class _MessagePageState extends State<MessagePage> {
     }
   }
 
-  void acceptMessage(int index) {
-    // Handle accept action
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ChatScreen(message: messages[index])),
-    );
+  void acceptMessage(int index) async {
+    String? currentUserUid = _auth.currentUser?.uid;
+    if (currentUserUid != null) {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('requests')
+          .where('doner', isEqualTo: currentUserUid)
+          .where('status', isEqualTo: 'pending')
+          .get();
+      querySnapshot.docs.forEach((doc) {
+        Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?; // Cast to Map<String, dynamic>?
+        if (doc.exists && data != null && data.containsKey('message') && data.containsKey('time')) {
+          if (data['message'] == messages[index] && data['time'] == timestamps[index]) {
+            doc.reference.update({'status': 'accepted'});
+          }
+        }
+      });
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ChatScreen(message: messages[index])),
+      );
+    }
   }
 
   void rejectMessage(int index) {
