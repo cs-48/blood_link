@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:intl/intl.dart';
 class ChatScreen extends StatefulWidget {
   final String message;
   final String seeker;
@@ -66,6 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+     String? currentUserUid = _auth.currentUser?.uid;
     return Scaffold(
       appBar: AppBar(
         title: Text('Chat Screen'),
@@ -74,11 +75,17 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: ListView.builder(
+               reverse: true,
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
                 return ListTile(
-                  title: Text('${message.senderId}: ${message.message}'),
+                  title: message.senderId == currentUserUid
+        ? Text('You:${message.message}',
+        style: TextStyle(color: Colors.red),) // If sender is the current user
+        : Text('Sender:${message.message}' ,
+        style: TextStyle(color: Colors.green),), // If sender is the other user
+                  subtitle: Text(DateFormat.yMMMd().add_jm().format(message.time.toDate())),
                 );
               },
             ),
