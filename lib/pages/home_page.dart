@@ -22,12 +22,19 @@ class _HomePageState extends State<HomePage> {
 
   void addUserDetailsToFirestore() async {
     final usersCollection = FirebaseFirestore.instance.collection('users');
+    print(user);                             
+  String name;
+    if (user.displayName == null) {
+      name = "anonymous";
+    } else {
+      name = user.displayName!;
+    }
     await usersCollection.doc(user.uid).set({
       'uid': user.uid,
-      'name': user.displayName,
+      'name': user.email ,
       'email': user.email,
       // Add any other user details you want to store
-    });
+    }, SetOptions(merge: true)); 
   }
 
   @override

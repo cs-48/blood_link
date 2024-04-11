@@ -1,44 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:developer';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'register_as_donor.dart';
+import 'edit_profile.dart';
 
 class ProfilePage extends StatelessWidget {
-  final user = FirebaseAuth
-      .instance.currentUser!; 
-     
- void signUserOut() {
+  final user = FirebaseAuth.instance.currentUser!;
+
+  Future<bool> fetchDonorStatus() async {
+    try {
+      final uid = user.uid;
+      final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final donor = doc.get('donor');
+      print(donor);
+      return donor ?? false; // Default to false if donor field is not found
+    } catch (e) {
+      print('Error fetching donor status: $e');
+      return false; // Return a default value in case of an error
+    }
+  }
+
+  void signUserOut() {
     FirebaseAuth.instance.signOut();
   }
 
-  
   @override
-
   Widget build(BuildContext context) {
-
-
-  final email = user.email;
-  final img = user.photoURL;
-  final name = user.displayName;
+    final email = user.email ?? '';
+    final img = user.photoURL ?? '';
+    final name = user.displayName ?? email.split('@')[0];
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('Profile')),// remove when the profile page building is completed
+        title: Center(child: Text('Profile')),
       ),
       body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center, // Align fields to the center
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Align(
-              alignment: Alignment.topCenter, // Align profile image to the top center
+              alignment: Alignment.topCenter,
               child: CircleAvatar(
                 radius: 50,
-                backgroundImage: NetworkImage("$img"),
+                backgroundImage: img.isNotEmpty ? NetworkImage(img) : null,
+                child: img.isEmpty ? Icon(Icons.account_circle, size: 100) : null,
               ),
             ),
             SizedBox(height: 20),
-            Center( // Align username to the center
+            Center(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16), // Add horizontal padding
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   '$name',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -47,126 +57,58 @@ class ProfilePage extends StatelessWidget {
             ),
             SizedBox(height: 30),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16), // Add horizontal padding
-              child: Row( // Align email, height, weight, blood group, and date of birth to the left
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
                 children: [
                   Text(
                     'Email: ',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(width: 8), // Add space after the header
+                  SizedBox(width: 8),
                   Text(
-                  '$email',
+                    '$email',
                     style: TextStyle(fontSize: 16),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16), // Add horizontal padding
-              child: Row( // Align height, weight, blood group, and date of birth to the left
-                children: [
-                  Text(
-                    'Height: ',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(width: 8), // Add space after the header
-                  Text(
-                    '180 cm',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16), // Add horizontal padding
-              child: Row( // Align height, weight, blood group, and date of birth to the left
-                children: [
-                  Text(
-                    'Weight: ',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(width: 8), // Add space after the header
-                  Text(
-                    '70 kg',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16), // Add horizontal padding
-              child: Row( // Align height, weight, blood group, and date of birth to the left
-                children: [
-                  Text(
-                    'Blood Group: ',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(width: 8), // Add space after the header
-                  Text(
-                    'O+',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16), // Add horizontal padding
-              child: Row( // Align height, weight, blood group, and date of birth to the left
-                children: [
-                  Text(
-                    'Date of Birth: ',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(width: 8), // Add space after the header
-                  Text(
-                    '01/01/1990',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16), // Add horizontal padding
-              child: Row( // Align height, weight, blood group, and date of birth to the left
-                children: [
-                  Text(
-                    'Other Health Factors: ',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(width: 8), // Add space after the header
-                  Text(
-                    'Some other health factors',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center, // Align fields to the center
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16), // Add horizontal padding
-                  child: Text('Register as a donor'),
-                ),
-                Switch(
-                  value: false, // Replace with your logic to toggle the button
-                  onChanged: (value)=>  Navigator.push(context,MaterialPageRoute(builder: (context) => RegDonor()),),
-                ),
-              ],
+            StreamBuilder<bool>(
+              stream: Stream.fromFuture(fetchDonorStatus()),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Register as Donor: ',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 8),
+                        Switch(
+                          value: snapshot.data!,
+                          onChanged: (value) {
+                            // Handle switch state change here
+                            Navigator.push(context,MaterialPageRoute(builder: (context) => RegDonor()));
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
             ),
             const SizedBox(height: 20),
             Center(
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.6,
                 child: ElevatedButton.icon(
-                  onPressed:()=>  Navigator.push(context,MaterialPageRoute(builder: (context) => RegDonor()),),
+                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) =>  EditProfile())),
                   icon: Icon(
                     Icons.edit,
                     color: Colors.white,
@@ -180,7 +122,7 @@ class ProfilePage extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    minimumSize: Size(double.infinity, 50), // Increase the height of the button
+                    minimumSize: Size(double.infinity, 50),
                   ),
                 ),
               ),
@@ -190,7 +132,7 @@ class ProfilePage extends StatelessWidget {
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.6,
                 child: ElevatedButton.icon(
-                  onPressed: signUserOut ,
+                  onPressed: signUserOut,
                   icon: Icon(
                     Icons.logout,
                     color: Colors.white,
@@ -204,7 +146,7 @@ class ProfilePage extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    minimumSize: Size(double.infinity, 50), // Increase the height of the button
+                    minimumSize: Size(double.infinity, 50),
                   ),
                 ),
               ),

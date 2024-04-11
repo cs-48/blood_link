@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Add this import
 
 class SearchWidget extends StatefulWidget {
   const SearchWidget({Key? key});
@@ -8,16 +9,7 @@ class SearchWidget extends StatefulWidget {
 }
 
 class _SearchWidgetState extends State<SearchWidget> {
-  List<Doner> doners = [
-    Doner(name: 'Arun', place: 'Thiruvananthapuram', bloodGroup: 'A+'),
-    Doner(name: 'Anu', place: 'Kochi', bloodGroup: 'B-'),
-    Doner(name: 'Manoj', place: 'Kozhikode', bloodGroup: 'O+'),
-    Doner(name: 'Sneha', place: 'Thrissur', bloodGroup: 'AB+'),
-    Doner(name: 'Rahul', place: 'Kollam', bloodGroup: 'A-'),
-    Doner(name: 'Deepa', place: 'Alappuzha', bloodGroup: 'B+'),
-    Doner(name: 'Suresh', place: 'Palakkad', bloodGroup: 'O-'),
-    Doner(name: 'Divya', place: 'Kannur', bloodGroup: 'AB-'),
-  ];
+  List<Doner> doners = []; // Initialize an empty list
 
   List<Doner> filteredDoners = [];
 
@@ -31,6 +23,33 @@ class _SearchWidgetState extends State<SearchWidget> {
           .toList();
     });
   }
+
+  @override
+  void initState() {
+    super.initState();
+    getDonersFromFirebase();
+  }
+void getDonersFromFirebase() async {
+  QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .where('donor', isEqualTo: true)
+      .get();
+
+  List<Doner> fetchedDoners = [];
+  querySnapshot.docs.forEach((doc) {
+    fetchedDoners.add(Doner(
+      name: doc['name'] ?? 'Anonymous_${DateTime.now().millisecondsSinceEpoch}',
+      place: doc['place'],
+      bloodGroup: doc['bloodGroup'],
+    ));
+  });
+
+  setState(() {
+    doners = fetchedDoners;
+    filteredDoners = doners;
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +85,8 @@ class _SearchWidgetState extends State<SearchWidget> {
                     'Place: ${filteredDoners[index].place}, Blood Group: ${filteredDoners[index].bloodGroup}',
                   ),
                   tileColor: index % 2 == 0 ? Colors.grey[200] : Colors.white,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
