@@ -25,13 +25,13 @@ class _HomePageState extends State<HomePage> {
     print(user);                             
   String name;
     if (user.displayName == null) {
-      name = "anonymous";
+      name = "anonymous_${user.hashCode}";
     } else {
       name = user.displayName!;
     }
     await usersCollection.doc(user.uid).set({
       'uid': user.uid,
-      'name': user.email ,
+      'name': name ,
       'email': user.email,
       // Add any other user details you want to store
     }, SetOptions(merge: true)); 
