@@ -16,6 +16,8 @@ class DonerDetailPage extends StatefulWidget {
 
 class _DonerDetailPageState extends State<DonerDetailPage> {
   bool connected = false; // Track connection status
+  TextEditingController messageController = TextEditingController();
+  bool messageSent = false; // Track if message is sent
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +45,22 @@ class _DonerDetailPageState extends State<DonerDetailPage> {
               style: TextStyle(fontSize: 20),
             ),
             SizedBox(height: 16),
+            TextFormField(
+              controller: messageController,
+              enabled: !connected && !messageSent, // Allow editing only if not connected or message is not sent
+              decoration: InputDecoration(
+                labelText: 'Enter a message',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 _sendRequestToConnect();
                 setState(() {
                   connected = !connected; // Toggle connection status
+                  messageSent = true; // Mark message as sent
+                  // messageController.clear(); // Clear the message field
                 });
               },
               child: Text(connected ? 'Pending ' : 'Connect'),
@@ -84,6 +97,7 @@ class _DonerDetailPageState extends State<DonerDetailPage> {
           'status': 'pending',
           'reqid': reqid,
           'time': currentTime, // Add current time to the document
+          'message': messageController.text, // Add the message to the document
         });
       }
     }
@@ -91,7 +105,6 @@ class _DonerDetailPageState extends State<DonerDetailPage> {
 
   String _generateReqId(String uid1, String uid2) {
     List<String> uids = [uid1, uid2];
-    uids.sort(); // Sort the UIDs to ensure consistency
     String concatenatedUids = uids.join('');
     var bytes = utf8.encode(concatenatedUids);
     var hash = sha256.convert(bytes);
