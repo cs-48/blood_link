@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:blood_link/pages/auth_page.dart';
+import 'package:blood_link/pages/home_page.dart';
 import 'package:blood_link/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class _IntroPageState extends State<IntroPage> {
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => ProfilePage(),
+          builder: (context) => AuthPage(),
         ),
       );
     });
