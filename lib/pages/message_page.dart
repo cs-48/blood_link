@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'chat_page.dart';
 
 class MessagePage extends StatefulWidget {
@@ -9,17 +11,42 @@ class MessagePage extends StatefulWidget {
 }
 
 class _MessagePageState extends State<MessagePage> {
-  List<String> messages = [
-    'Need O+ve blood near Trivandrum.',
-    'Need O+ve blood near Chengannur.',
-    'Need O+ve blood near Thiruvalla.',
-  ];
+  late FirebaseAuth _auth;
+  late FirebaseFirestore _firestore;
+  List<String> messages = [];
+  List<String> timestamps = [];
 
-  List<String> timestamps = [
-    '2024-04-06 10:30:00',
-    '2024-04-07 15:45:00',
-    '2024-04-08 09:20:00',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _auth = FirebaseAuth.instance;
+    _firestore = FirebaseFirestore.instance;
+    _fetchRequests();
+  }
+
+  void _fetchRequests() async {
+    String? currentUserUid = _auth.currentUser?.uid;
+    if (currentUserUid != null) {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('requests')
+          .where('doner', isEqualTo: currentUserUid)
+          .where('status', isEqualTo: 'pending')
+          .get();
+      List<String> fetchedMessages = [];
+      List<String> fetchedTimestamps = [];
+      querySnapshot.docs.forEach((doc) {
+        Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?; // Cast to Map<String, dynamic>?
+        if (doc.exists && data != null && data.containsKey('message') && data.containsKey('time')) {
+          fetchedMessages.add(data['message']);
+          fetchedTimestamps.add(data['time']);
+        }
+      });
+      setState(() {
+        messages = fetchedMessages;
+        timestamps = fetchedTimestamps;
+      });
+    }
+  }
 
   void acceptMessage(int index) {
     // Handle accept action
@@ -29,8 +56,7 @@ class _MessagePageState extends State<MessagePage> {
     );
   }
 
-
-   void rejectMessage(int index) {
+  void rejectMessage(int index) {
     // Handle reject action
     setState(() {
       messages.removeAt(index);
@@ -55,7 +81,7 @@ class _MessagePageState extends State<MessagePage> {
                 children: [
                   Text(messages[index]),
                   Text(
-                    'Received on: ${timestamps[index]}',
+                    'Request Send Time: ${timestamps[index]}',
                     style: TextStyle(color: Colors.grey),
                   ),
                 ],
@@ -76,7 +102,7 @@ class _MessagePageState extends State<MessagePage> {
                   SizedBox(width: 8.0),
                   TextButton(
                     onPressed: () {
-                      // Handle reject action
+                      rejectMessage(index);
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text('Rejected message ${index + 1}'),
                       ));
@@ -97,5 +123,3 @@ class _MessagePageState extends State<MessagePage> {
     );
   }
 }
-
-

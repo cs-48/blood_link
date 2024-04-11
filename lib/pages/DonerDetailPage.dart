@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 import 'SerchDoner.dart';
+import 'package:crypto/crypto.dart';
 
 class DonerDetailPage extends StatefulWidget {
   final Doner doner;
@@ -63,11 +65,36 @@ class _DonerDetailPageState extends State<DonerDetailPage> {
     String? currentUserUid = auth.currentUser?.uid;
 
     if (currentUserUid != null) {
-      await firestore.collection('requests').add({
-        'doner': widget.doner.uid,
-        'seeker': currentUserUid,
-        'status': 'pending',
-      });
+      // Create a unique reqid using a hash of both UIDs
+      String reqid = _generateReqId(currentUserUid, widget.doner.uid);
+
+      // Get the current time in the desired format
+      String currentTime = DateTime.now().toString();
+
+      // Check if the entry already exists
+      QuerySnapshot querySnapshot = await firestore
+          .collection('requests')
+          .where('reqid', isEqualTo: reqid)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        await firestore.collection('requests').add({
+          'doner': widget.doner.uid,
+          'seeker': currentUserUid,
+          'status': 'pending',
+          'reqid': reqid,
+          'time': currentTime, // Add current time to the document
+        });
+      }
     }
+  }
+
+  String _generateReqId(String uid1, String uid2) {
+    List<String> uids = [uid1, uid2];
+    uids.sort(); // Sort the UIDs to ensure consistency
+    String concatenatedUids = uids.join('');
+    var bytes = utf8.encode(concatenatedUids);
+    var hash = sha256.convert(bytes);
+    return hash.toString();
   }
 }
