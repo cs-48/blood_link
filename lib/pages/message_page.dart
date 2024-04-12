@@ -63,7 +63,7 @@ class _MessagePageState extends State<MessagePage> {
         Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?; // Cast to Map<String, dynamic>?
         if (doc.exists && data != null && data.containsKey('message') && data.containsKey('time')) {
           if (data['message'] == message.message && data['time'] == message.time) {
-            doc.reference.update({'status': 'accepted'});
+            doc.reference.update({'status': 'accepted','acceptedTime':FieldValue.serverTimestamp()});
           }
         }
       });
@@ -99,6 +99,7 @@ class _MessagePageState extends State<MessagePage> {
         title: Text('Message Notifications'),
       ),
       body: ListView.builder(
+        reverse: true,
         itemCount: messages.length,
         itemBuilder: (BuildContext context, int index) {
           final message = messages[index];

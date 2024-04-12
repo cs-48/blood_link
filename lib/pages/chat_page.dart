@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+
 class ChatScreen extends StatefulWidget {
   final String message;
   final String seeker;
@@ -18,6 +19,7 @@ class _ChatScreenState extends State<ChatScreen> {
   late FirebaseFirestore _firestore;
   late TextEditingController _messageController;
   List<Message> messages = [];
+  late bool isDonationSuccessful;
 
   @override
   void initState() {
@@ -26,6 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
     _firestore = FirebaseFirestore.instance;
     _messageController = TextEditingController();
     _fetchMessages();
+    isDonationSuccessful = false; // Default value
   }
 
   void _fetchMessages() async {
@@ -35,7 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
           .collection('requests')
           .doc(widget.requestId)
           .collection('messages')
-          .orderBy('timestamp', descending: true)
+          .orderBy('timestamp')
           .get();
       List<Message> fetchedMessages = [];
       querySnapshot.docs.forEach((doc) {
@@ -66,25 +69,42 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-     String? currentUserUid = _auth.currentUser?.uid;
+    String? currentUserUid = _auth.currentUser?.uid;
     return Scaffold(
       appBar: AppBar(
         title: Text('Chat Screen'),
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Donation Successful:'),
+                Switch(
+                  value: isDonationSuccessful,
+                  onChanged: (value) {
+                    setState(() {
+                      isDonationSuccessful = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
           Expanded(
             child: ListView.builder(
-               reverse: true,
+              reverse: true,
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
                 return ListTile(
                   title: message.senderId == currentUserUid
-        ? Text('You:${message.message}',
-        style: TextStyle(color: Colors.red),) // If sender is the current user
-        : Text('Sender:${message.message}' ,
-        style: TextStyle(color: Colors.green),), // If sender is the other user
+                      ? Text('You: ${message.message}',
+                      style: TextStyle(color: Colors.red),)
+                      : Text('Sender: ${message.message}',
+                      style: TextStyle(color: Colors.green),),
                   subtitle: Text(DateFormat.yMMMd().add_jm().format(message.time.toDate())),
                 );
               },
