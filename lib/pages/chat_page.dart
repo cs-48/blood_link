@@ -72,14 +72,14 @@ class _ChatScreenState extends State<ChatScreen> {
     String? currentUserUid = _auth.currentUser?.uid;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat Screen'),
+        title: Text('Message'),centerTitle: true,
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text('Donation Successful:'),
                 Switch(
@@ -88,6 +88,12 @@ class _ChatScreenState extends State<ChatScreen> {
                     setState(() {
                       isDonationSuccessful = value;
                     });
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.phone),
+                  onPressed: () {
+                      // Add your phone call functionality here
                   },
                 ),
               ],
