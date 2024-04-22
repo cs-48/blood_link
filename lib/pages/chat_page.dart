@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'callinterface.dart';
 
 class ChatScreen extends StatefulWidget {
   final String message;
@@ -92,8 +93,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 IconButton(
                   icon: Icon(Icons.phone),
-                  onPressed: () {
-                      // Add your phone call functionality here
+                  onPressed: () {Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CallConnectingInterface()),
+                  );
                   },
                 ),
               ],
