@@ -87,7 +87,7 @@ class _RegDonorState extends State<RegDonor> {
                 onSubmitted: (value) {
                   setState(() {
                     _healthFactors.add(value);
-                    _healthFactorsController.clear();
+                    // _healthFactorsController.clear();
                   });
                 },
               ),

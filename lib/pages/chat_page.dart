@@ -1,28 +1,122 @@
 import 'package:flutter/material.dart';
-class ChatScreen extends StatelessWidget {
-  final String message;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+import 'callinterface.dart';
 
-  const ChatScreen({Key? key, required this.message}) : super(key: key);
+class ChatScreen extends StatefulWidget {
+  final String message;
+  final String seeker;
+  final String requestId;
+
+  const ChatScreen({Key? key, required this.message, required this.seeker, required this.requestId}) : super(key: key);
+
+  @override
+  _ChatScreenState createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  late FirebaseAuth _auth;
+  late FirebaseFirestore _firestore;
+  late TextEditingController _messageController;
+  List<Message> messages = [];
+  late bool isDonationSuccessful;
+
+  @override
+  void initState() {
+    super.initState();
+    _auth = FirebaseAuth.instance;
+    _firestore = FirebaseFirestore.instance;
+    _messageController = TextEditingController();
+    _fetchMessages();
+    isDonationSuccessful = false; // Default value
+  }
+
+  void _fetchMessages() async {
+    String? currentUserUid = _auth.currentUser?.uid;
+    if (currentUserUid != null) {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('requests')
+          .doc(widget.requestId)
+          .collection('messages')
+          .orderBy('timestamp')
+          .get();
+      List<Message> fetchedMessages = [];
+      querySnapshot.docs.forEach((doc) {
+        fetchedMessages.add(Message(
+          message: doc['message'],
+          time: doc['timestamp'],
+          senderId: doc['senderId'],
+        ));
+      });
+      setState(() {
+        messages = fetchedMessages;
+      });
+    }
+  }
+
+  void _sendMessage() async {
+    String? currentUserUid = _auth.currentUser?.uid;
+    if (currentUserUid != null) {
+      await _firestore.collection('requests').doc(widget.requestId).collection('messages').add({
+        'message': _messageController.text,
+        'senderId': currentUserUid,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      _messageController.clear();
+      _fetchMessages();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    String? currentUserUid = _auth.currentUser?.uid;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat Screen'),
+        title: Text('Message'),centerTitle: true,
       ),
       body: Column(
         children: [
-          Expanded(
-            child: ListView(
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                ListTile(
-                  title: Text('User A: Hello, I can help with your request.'),
+                Text('Donation Successful:'),
+                Switch(
+                  value: isDonationSuccessful,
+                  onChanged: (value) {
+                    setState(() {
+                      isDonationSuccessful = value;
+                    });
+                  },
                 ),
-                ListTile(
-                  title: Text('User B: That would be great!'),
+                IconButton(
+                  icon: Icon(Icons.phone),
+                  onPressed: () {Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CallConnectingInterface()),
+                  );
+                  },
                 ),
-                // Add more messages here...
               ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              reverse: true,
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final message = messages[index];
+                return ListTile(
+                  title: message.senderId == currentUserUid
+                      ? Text('You: ${message.message}',
+                      style: TextStyle(color: Colors.red),)
+                      : Text('Sender: ${message.message}',
+                      style: TextStyle(color: Colors.green),),
+                  subtitle: Text(DateFormat.yMMMd().add_jm().format(message.time.toDate())),
+                );
+              },
             ),
           ),
           Padding(
@@ -31,6 +125,7 @@ class ChatScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextField(
+                    controller: _messageController,
                     decoration: InputDecoration(
                       hintText: 'Type a message...',
                     ),
@@ -38,9 +133,7 @@ class ChatScreen extends StatelessWidget {
                 ),
                 IconButton(
                   icon: Icon(Icons.send),
-                  onPressed: () {
-                    // Send message functionality
-                  },
+                  onPressed: _sendMessage,
                 ),
               ],
             ),
@@ -49,4 +142,12 @@ class ChatScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class Message {
+  final String message;
+  final Timestamp time;
+  final String senderId;
+
+  Message({required this.message, required this.time, required this.senderId});
 }

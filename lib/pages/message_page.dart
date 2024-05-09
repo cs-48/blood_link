@@ -28,18 +28,21 @@ class _MessagePageState extends State<MessagePage> {
     if (currentUserUid != null) {
       QuerySnapshot querySnapshot = await _firestore
           .collection('requests')
-          .where('doner', isEqualTo: currentUserUid)
           .where('status', whereIn: ['pending', 'accepted']) // Fetch both pending and accepted requests
           .get();
       List<Message> fetchedMessages = [];
       querySnapshot.docs.forEach((doc) {
         Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?; // Cast to Map<String, dynamic>?
         if (doc.exists && data != null && data.containsKey('message') && data.containsKey('time')) {
-          fetchedMessages.add(Message(
-            message: data['message'],
-            time: data['time'],
-            status: data['status'],
-          ));
+          if (data['doner'] == currentUserUid || data['seeker'] == currentUserUid) {
+            fetchedMessages.add(Message(
+              message: data['message'],
+              time: data['time'],
+              status: data['status'],
+              seeker: data['seeker'],
+              reqId: data['reqid'], // Add request ID
+            ));
+          }
         }
       });
       setState(() {
@@ -60,13 +63,13 @@ class _MessagePageState extends State<MessagePage> {
         Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?; // Cast to Map<String, dynamic>?
         if (doc.exists && data != null && data.containsKey('message') && data.containsKey('time')) {
           if (data['message'] == message.message && data['time'] == message.time) {
-            doc.reference.update({'status': 'accepted'});
+            doc.reference.update({'status': 'accepted','acceptedTime':FieldValue.serverTimestamp()});
           }
         }
       });
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ChatScreen(message: message.message)),
+        MaterialPageRoute(builder: (context) => ChatScreen(message: message.message, seeker: message.seeker, requestId: message.reqId)),
       ).then((_) {
         setState(() {
           messages.remove(message);
@@ -85,17 +88,16 @@ class _MessagePageState extends State<MessagePage> {
   void viewAcceptedRequest(Message message) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ChatScreen(message: message.message)),
+      MaterialPageRoute(builder: (context) => ChatScreen(message: message.message, seeker: message.seeker, requestId: message.reqId)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Message Notifications'),
-      ),
+      
       body: ListView.builder(
+        reverse: true,
         itemCount: messages.length,
         itemBuilder: (BuildContext context, int index) {
           final message = messages[index];
@@ -170,6 +172,8 @@ class Message {
   final String message;
   final String time;
   final String status;
+  final String seeker;
+  final String reqId; // Add request ID field
 
-  Message({required this.message, required this.time, required this.status});
+  Message({required this.message, required this.time, required this.status, required this.seeker, required this.reqId});
 }

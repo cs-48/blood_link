@@ -12,8 +12,12 @@ class ProfilePage extends StatelessWidget {
       final uid = user.uid;
       final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
       final donor = doc.get('donor');
+      // print(donor);
+      print('123456789345678456756768');
       print(donor);
+
       return donor ?? false; // Default to false if donor field is not found
+    
     } catch (e) {
       print('Error fetching donor status: $e');
       return false; // Return a default value in case of an error
@@ -23,12 +27,29 @@ class ProfilePage extends StatelessWidget {
   void signUserOut() {
     FirebaseAuth.instance.signOut();
   }
+   var Group='n/a';
+  Future<String> fetchGroup() async {
+    final uid = user.uid;
+DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
+ Group=userDoc['bloodGroup'];
+       if (userDoc['bloodGroup']==null) {
+  Group="";
+}
+return Group;
+  }
+ 
+  
+// String _Group=fetchGroup();
   @override
   Widget build(BuildContext context) {
     final email = user.email ?? '';
     final img = user.photoURL ?? '';
     final name = user.displayName ?? email.split('@')[0];
+    var a=fetchGroup().then((value) =>{
+      print(value)
+    });
+    // print(a);
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text('Profile')),
@@ -72,6 +93,23 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
             ),
+            // SizedBox(height: 30),
+            // Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 16),
+            //   child: Row(
+            //     children: [
+            //       Text(
+            //         'Blood Group:',
+            //         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            //       ),
+            //       SizedBox(width: 8),
+            //       Text(
+            //         '${fetchGroup().then((value) => value.toString())}',
+            //         style: TextStyle(fontSize: 16),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             const SizedBox(height: 20),
             StreamBuilder<bool>(
               stream: Stream.fromFuture(fetchDonorStatus()),
