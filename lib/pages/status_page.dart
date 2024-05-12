@@ -1,4 +1,6 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
+
 class StatusPage extends StatefulWidget {
   const StatusPage({Key? key}) : super(key: key);
 
@@ -19,11 +21,14 @@ class Donation {
 }
 
 class _StatusPageState extends State<StatusPage> {
-  final List<Donation> donations = [
-    Donation(id: 1, completed: true, date: DateTime(2024, 1, 20)),
-    Donation(id: 2, completed: false, date: DateTime(2024, 2, 25)),
-    Donation(id: 3, completed: true, date: DateTime(2024, 3, 27)),
-  ];
+  final List<Donation> donations = List.generate(
+    Random().nextInt(10) + 1, // Random number of donations between 1 and 10
+    (index) => Donation(
+      id: Random().nextInt(1000) + 1, // Random ID between 1 and 1000
+      completed: Random().nextBool(), // Random completion status
+      date: DateTime.now().subtract(Duration(days: Random().nextInt(365))), // Random date within the last year
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +42,9 @@ class _StatusPageState extends State<StatusPage> {
               itemCount: donations.length,
               itemBuilder: (context, index) {
                 final donation = donations[index];
-                final color = donation.completed ? Color.fromARGB(255, 253, 253, 253) : Color.fromARGB(255, 244, 231, 211);
+                final color = donation.completed
+                    ? Color.fromARGB(255, 253, 253, 253)
+                    : Color.fromARGB(255, 244, 231, 211);
                 return Card(
                   color: color,
                   elevation: 3.0,
@@ -45,10 +52,10 @@ class _StatusPageState extends State<StatusPage> {
                     title: Text('Donation ID: ${donation.id}'),
                     subtitle: Text('Completed: ${donation.completed}'),
                     trailing: donation.completed
-                        ? Icon(Icons.add_task_rounded, color: Colors.green) // Tick icon for completed donation
-                        : Icon(Icons.assignment_late, color: Colors.orange), // Wait icon for pending donation
-                    ),
-                  );
+                        ? Icon(Icons.add_task_rounded, color: Colors.green)
+                        : Icon(Icons.assignment_late, color: Colors.orange),
+                  ),
+                );
               },
             ),
           ),
@@ -70,31 +77,39 @@ class DonationEligibility extends StatelessWidget {
   Widget build(BuildContext context) {
     final lastDonationDate = donations.isEmpty ? null : donations.last.date;
     final currentDate = DateTime.now();
-    final difference = lastDonationDate != null ? currentDate.difference(lastDonationDate).inDays : null;
+    final difference =
+        lastDonationDate != null ? currentDate.difference(lastDonationDate).inDays : null;
 
     return Container(
-  padding: EdgeInsets.all(16.0),
-  decoration: BoxDecoration(
-    gradient: LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [
-      difference != null && difference >= 90 ? Color.fromARGB(255, 29, 230, 79) : Color.fromARGB(255, 255, 0, 0),
-      difference != null && difference >= 90 ? Color.fromARGB(255, 50, 72, 10) : Color.fromARGB(255, 102, 22, 22),
-    ],
-  ),
-  
-  ),
-  child: Center(
-    child: Text(
-      difference != null && difference >= 90 ? 'Eligible for donation' : 'Not eligible for donation',
-      style: TextStyle(color: Color.fromARGB(255, 255, 255, 255),
-      fontSize: 17.0,
-      fontWeight: FontWeight.bold,
+      padding: EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            difference != null && difference >= 90
+                ? Color.fromARGB(255, 29, 230, 79)
+                : Color.fromARGB(255, 255, 0, 0),
+            difference != null && difference >= 90
+                ? Color.fromARGB(255, 50, 72, 10)
+                : Color.fromARGB(255, 102, 22, 22),
+          ],
+        ),
       ),
-    ),
-  ),
-);}
+      child: Center(
+        child: Text(
+          difference != null && difference >= 90
+              ? 'Eligible for donation'
+              : 'Not eligible for donation',
+          style: TextStyle(
+            color: Color.fromARGB(255, 255, 255, 255),
+            fontSize: 17.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class RemainingDays extends StatelessWidget {
@@ -106,13 +121,12 @@ class RemainingDays extends StatelessWidget {
   Widget build(BuildContext context) {
     final lastDonationDate = donations.isEmpty ? null : donations.last.date;
     final currentDate = DateTime.now();
-    final difference = lastDonationDate != null ? currentDate.difference(lastDonationDate).inDays : null;
+    final difference =
+        lastDonationDate != null ? currentDate.difference(lastDonationDate).inDays : null;
     final remainingDays = difference != null && difference < 90 ? 90 - difference : null;
 
     return remainingDays != null
-        ? Center(
-            child: Text("Remaining days for next donation: $remainingDays days")
-          )
+        ? Center(child: Text("Remaining days for next donation: $remainingDays days"))
         : SizedBox.shrink();
   }
 }
