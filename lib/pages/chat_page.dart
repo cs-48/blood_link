@@ -1,3 +1,4 @@
+import 'package:blood_link/services/call_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -95,7 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   icon: Icon(Icons.phone),
                   onPressed: () {Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => CallConnectingInterface()),
+          MaterialPageRoute(builder: (context) => CallPage(callID: widget.seeker)),
                   );
                   },
                 ),
