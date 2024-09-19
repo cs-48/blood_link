@@ -35,18 +35,18 @@ class CallConnectingInterface extends StatelessWidget {
             ElevatedButton(
               onPressed: () => _endCall(context),
               style: ElevatedButton.styleFrom(
-                primary: Colors.red,
+                backgroundColor: Colors.red,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
                 ),
               ),
               child: Padding(
-    padding: const EdgeInsets.all(10.0),
-    child: Text(
-      'End Call',
-      style: TextStyle(fontSize: 20, color: Colors.white),
-    ),
-  ),
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  'End Call',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+              ),
             ),
           ],
         ),
