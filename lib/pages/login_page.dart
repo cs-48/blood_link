@@ -138,12 +138,59 @@ class _LoginPageState extends State<LoginPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(
-                        'Forgot Password ?',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                        ),
-                      ),
+                     GestureDetector(
+  onTap: () async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);
+      // Password reset email sent successfully
+      print("Password reset email sent successfully");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Password Reset Email Sent'),
+            content: Text('Check your email to reset your password.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      // An error occurred while sending the password reset email
+      print("Error sending password reset email: $e");
+         showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Color.fromARGB(255, 255, 255, 255),
+            title: Text('Error sending reset mail'),
+            content: Text('Please enter the email and then click the reset button'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  },
+  child: Text(
+    'Forgot Password?',
+    style: TextStyle(
+      color: Colors.grey[700],
+    ),
+  ),
+),
                     ],
                   ),
                 ),

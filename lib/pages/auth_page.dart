@@ -1,6 +1,8 @@
+import 'package:blood_link/pages/intro_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'home_page.dart';
+import "MyHomePage.dart";
 import 'login_or_register_page.dart';
 
 class AuthPage extends StatelessWidget {
@@ -14,7 +16,7 @@ class AuthPage extends StatelessWidget {
         builder: (context, snapshot) {
           //user is logged in
           if (snapshot.hasData) {  //snapshot.hasData  //ture
-            return HomePage();
+            return MyHomePage();
           }
 
           //user is NOT logged in
